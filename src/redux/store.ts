@@ -1,4 +1,5 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit'
+import { useDispatch } from 'react-redux'
 import newsReducer from '../types/news-reducer'
 
 const rootReducer = combineReducers({
@@ -10,6 +11,8 @@ export type AppState = ReturnType<typeof rootReducer>
 const store = configureStore({
   reducer: rootReducer
 })
+export type AppDispatch = typeof store.dispatch
+export const useAppDispatch = () => useDispatch<AppDispatch>()
 
 type ActionFuncType<T> = T extends {[key: string]: infer U} ? U : never
 

@@ -1,28 +1,30 @@
 import React from 'react';
 import classes from "./NewsItem.module.scss";
 import cn from 'classnames'
+import {NewsType} from "../../types/types";
+import {Button} from "semantic-ui-react";
 
+type PropsType = {
+  news: NewsType
+}
 
-const NewsItem: React.FC = () => {
+const NewsItem: React.FC<PropsType> = ({news}) => {
   return (
     <div className={cn('ui', 'card', classes.contentContainer)}>
       <div className="content">
-        <div className="header">Cute Dog</div>
+        <div className="header"><a href={news.url}>{news.title}</a></div>
         <div className={classes.metaContainer}>
-          <div className="meta">{new Date(1615310708).toString().slice(0, 15)} |</div>
-          <div className="meta">by Alex |</div>
-          <div className="meta">type story</div>
+          <div className="meta">{new Date(news.time).toString().slice(0, 15)} |</div>
+          <div className="meta">by {news.by} |</div>
+          <div className="meta">type: {news.type}</div>
         </div>
 
         <div className="description">
-          <p>Cute dogs come in a variety of shapes and sizes. Some cute dogs are cute for their adorable faces, others
-            for their tiny stature, and even others for their massive size.</p>
-          <p>Many people also have their own barometers for what makes a cute dog.</p>
         </div>
       </div>
       <div className="extra content">
         <i className="check icon"></i>
-        121 Votes
+        {news.descendants}
       </div>
     </div>
   );

@@ -8,9 +8,12 @@ const instanceAxios = axios.create({
 
 
 export const newsAPI = {
-  getNews() {
+  getNewsList() {
     return instanceAxios.get<Array<number>>('newstories.json?print=pretty?')
       .then(data => data.data)
-    //TODO make objects page-array from data
+  },
+  getNews(newsId: number) {
+    return instanceAxios.get<NewsType>(`/item/${newsId}.json?print=pretty`)
+      .then(data => data.data)
   }
 }
