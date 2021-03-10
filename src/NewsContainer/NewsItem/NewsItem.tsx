@@ -13,7 +13,7 @@ const NewsItem: React.FC<PropsType> = ({news}) => {
       <div className="content">
         <div className="header"><a href={news.url} target={'_blank'}>{news.title}</a></div>
         <div className={classes.metaContainer}>
-          <div className="meta">{new Date(news.time).toString().slice(0, 15)} |</div>
+          <div className="meta">{new Date(news.time * 1000).toString().slice(4, 21)} |</div>
           <div className="meta">by {news.by} |</div>
           <div className="meta">type: {news.type} |</div>
           <div className="meta">Rating: {news.descendants}</div>

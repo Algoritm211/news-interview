@@ -16,3 +16,8 @@ export const getPage = (state: AppState) => {
 export const getLoading = (state: AppState) => {
   return state.newsReducer.loading
 }
+
+
+export const isNeedUpdate = (state: AppState) => {
+  return state.newsReducer.isNeedUpdate
+}

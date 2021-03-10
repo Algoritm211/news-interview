@@ -31,6 +31,7 @@ export const loadPageNews = createAsyncThunk<
   async (page, thunkAPI) => {
     const newsArr = thunkAPI.getState().newsReducer.newsArray[page - 1]
     thunkAPI.dispatch(setLoading(true))
+    thunkAPI.dispatch(setIsNeedUpdate(false))
     let allData = [] as Array<NewsType>
     for (let i = 0; i < newsArr.length; i++) {
       const news = await newsAPI.getNews(newsArr[i])
@@ -41,7 +42,23 @@ export const loadPageNews = createAsyncThunk<
   }
 )
 
-// export const checkNew
+export const checkNewNews = createAsyncThunk<
+  void,
+  'check',
+  {
+    dispatch: AppDispatch
+    state: AppState
+  }
+  >(
+  'newsReducer/checkNewNews',
+  async (check, thunkAPI) => {
+    const oldNewsFirstElem = +thunkAPI.getState().newsReducer.newsArray[0][0]
+    const newNews = await newsAPI.getNewsList()
+    if (newNews[0] !== oldNewsFirstElem) {
+      thunkAPI.dispatch(setIsNeedUpdate(true))
+    }
+  }
+)
 
 
 const newsReducer = createSlice({
@@ -50,7 +67,8 @@ const newsReducer = createSlice({
     news: [] as Array<NewsType>,
     newsArray: [] as Array<Array<number>>,
     loading: false,
-    page: 1
+    page: 1,
+    isNeedUpdate: false
   },
   reducers: {
     newLoadSuccess: (state, action) => {
@@ -58,6 +76,9 @@ const newsReducer = createSlice({
     },
     setLoading: (state, action) => {
       state.loading = action.payload
+    },
+    setIsNeedUpdate: (state, action) => {
+      state.isNeedUpdate = action.payload
     }
   },
   extraReducers: builder => {
@@ -70,10 +91,12 @@ const newsReducer = createSlice({
       console.log('All news loaded')
       state.news = action.payload
     })
+
+    // builder.addCase()
   }
 })
 
 
-export const {newLoadSuccess, setLoading} = newsReducer.actions
+export const {newLoadSuccess, setLoading, setIsNeedUpdate} = newsReducer.actions
 export default newsReducer.reducer
 
