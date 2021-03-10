@@ -9,6 +9,10 @@ export const getListOfNews = (state: AppState) => {
   return state.newsReducer.newsArray
 }
 
+export const getCurrentNews = (state: AppState) => {
+  return state.newsReducer.currentNews
+}
+
 export const getPage = (state: AppState) => {
   return state.newsReducer.page
 }

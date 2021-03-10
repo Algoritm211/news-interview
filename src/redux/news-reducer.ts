@@ -1,9 +1,10 @@
 import {NewsType} from "../types/types";
-import {AsyncThunk, createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {AsyncThunk, createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 import {newsAPI} from "../api/news-api";
 import {chunkArray} from "../helperFuctions/helperFuncs";
 import {AppDispatch, AppState} from "../redux/store";
+import {isNumber} from "util";
 
 
 export const initialState = {
@@ -61,11 +62,30 @@ export const checkNewNews = createAsyncThunk<
 )
 
 
+export const loadCurrentNews = createAsyncThunk<
+  NewsType,
+  number,
+  {
+    dispatch: AppDispatch
+    state: AppState
+  }
+  >(
+  'newsReducer/checkNewNews',
+  async (id, thunkAPI) => {
+    thunkAPI.dispatch(setLoading(true))
+    const currentNews = await newsAPI.getNews(id)
+    thunkAPI.dispatch(setLoading(false))
+    return currentNews
+  }
+)
+
+
 const newsReducer = createSlice({
   name: 'newsReducer',
   initialState: {
     news: [] as Array<NewsType>,
     newsArray: [] as Array<Array<number>>,
+    currentNews: {} as NewsType,
     loading: false,
     page: 1,
     isNeedUpdate: false
@@ -74,12 +94,12 @@ const newsReducer = createSlice({
     newLoadSuccess: (state, action) => {
       state.news.push(action.payload)
     },
-    setLoading: (state, action) => {
+    setLoading: (state, action:PayloadAction<boolean>) => {
       state.loading = action.payload
     },
     setIsNeedUpdate: (state, action) => {
       state.isNeedUpdate = action.payload
-    }
+    },
   },
   extraReducers: builder => {
     builder.addCase(loadNewsList.fulfilled, (state, action) => {
@@ -92,7 +112,9 @@ const newsReducer = createSlice({
       state.news = action.payload
     })
 
-    // builder.addCase()
+    builder.addCase(loadCurrentNews.fulfilled, (state, action) => {
+      state.currentNews = action.payload
+    })
   }
 })
 

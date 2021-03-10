@@ -1,11 +1,13 @@
 import React, {useEffect} from 'react';
 import NewsItem from './NewsItem/NewsItem';
 import {useDispatch, useSelector} from "react-redux";
-import {checkNewNews, loadNewsList, loadPageNews} from "../redux/news-reducer";
-import {getListOfNews, getLoading, getNews, getPage, isNeedUpdate} from "../redux/news-selector";
+import {checkNewNews, loadNewsList, loadPageNews} from "../../redux/news-reducer";
+import {getListOfNews, getLoading, getNews, getPage, isNeedUpdate} from "../../redux/news-selector";
 import classes from './NewsContainer.module.scss'
 import cn from 'classnames'
 import { Popup } from 'semantic-ui-react';
+import Loader from "../Loader/Loader";
+
 
 const NewsContainer: React.FC = () => {
 
@@ -48,9 +50,7 @@ const NewsContainer: React.FC = () => {
     <div className={classes.container}>
       {!loading
         ? newsBlock
-        : <div className="ui active inverted dimmer" style={{height: '100vh'}}>
-            <div className="ui large text loader">Loading</div>
-          </div>
+        : <Loader />
       }
       {!loading &&
       <Popup

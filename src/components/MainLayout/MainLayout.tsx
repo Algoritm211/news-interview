@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import {Redirect, Route, Switch, useHistory} from 'react-router-dom';
 import {Input, Menu, MenuItemProps, Segment} from 'semantic-ui-react';
 import NewsContainer from "../NewsContainer/NewsContainer";
+import NewsPage from "../NewsPage/NewsPage";
+
 
 const MainLayout: React.FC = () => {
 
@@ -41,8 +43,9 @@ const MainLayout: React.FC = () => {
 
       <Segment>
         <Switch>
-          <Route path={'/news'} component={NewsContainer}/>
-          {/*<Redirect to={'/news'}/>*/}
+          <Route path={'/news'} exact component={NewsContainer}/>
+          <Route path={'/news/:id'} component={NewsPage}/>
+          <Redirect to={'/news'}/>
         </Switch>
       </Segment>
     </React.Fragment>
