@@ -1,6 +1,6 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
-import newsReducer from '../types/news-reducer'
+import newsReducer from './news-reducer'
 
 const rootReducer = combineReducers({
   newsReducer: newsReducer

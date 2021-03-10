@@ -15,7 +15,7 @@ const MainLayout: React.FC = () => {
     }
   }
   return (
-    <div>
+    <React.Fragment>
       <Menu pointing>
         <Menu.Item
           name='news'
@@ -45,7 +45,7 @@ const MainLayout: React.FC = () => {
           {/*<Redirect to={'/news'}/>*/}
         </Switch>
       </Segment>
-    </div>
+    </React.Fragment>
   );
 };
 
