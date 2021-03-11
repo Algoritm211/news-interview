@@ -1,5 +1,5 @@
 import axios from "axios";
-import {NewsType} from "../types/types";
+import {CommentType, NewsType} from "../types/types";
 
 
 const instanceAxios = axios.create({
@@ -14,6 +14,10 @@ export const newsAPI = {
   },
   getNews(newsId: number) {
     return instanceAxios.get<NewsType>(`/item/${newsId}.json?print=pretty`)
+      .then(data => data.data)
+  },
+  getComment(commentId: number) {
+    return instanceAxios.get<CommentType>(`/item/${commentId}.json?print=pretty`)
       .then(data => data.data)
   }
 }

@@ -1,11 +1,15 @@
-import {NewsType} from "../types/types";
+import {CommentType, NewsType} from "../types/types";
 import {AsyncThunk, createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 import {newsAPI} from "../api/news-api";
 import {chunkArray} from "../helperFuctions/helperFuncs";
 import {AppDispatch, AppState} from "../redux/store";
-import {isNumber} from "util";
 
+
+type ThunkAPI = {
+  dispatch: AppDispatch
+  state: AppState
+}
 
 export const initialState = {
   news: [] as Array<NewsType>,
@@ -21,13 +25,7 @@ export const loadNewsList = createAsyncThunk(
   }
 )
 
-export const loadPageNews = createAsyncThunk<
-  Array<NewsType>,
-  number,
-  {
-    dispatch: AppDispatch
-    state: AppState
-  }>(
+export const loadPageNews = createAsyncThunk<Array<NewsType>, number, ThunkAPI>(
   'newsReducer/loadPageNews',
   async (page, thunkAPI) => {
     const newsArr = thunkAPI.getState().newsReducer.newsArray[page - 1]
@@ -43,14 +41,7 @@ export const loadPageNews = createAsyncThunk<
   }
 )
 
-export const checkNewNews = createAsyncThunk<
-  void,
-  'check',
-  {
-    dispatch: AppDispatch
-    state: AppState
-  }
-  >(
+export const checkNewNews = createAsyncThunk<void, 'check', ThunkAPI>(
   'newsReducer/checkNewNews',
   async (check, thunkAPI) => {
     const oldNewsFirstElem = +thunkAPI.getState().newsReducer.newsArray[0][0]
@@ -62,18 +53,15 @@ export const checkNewNews = createAsyncThunk<
 )
 
 
-export const loadCurrentNews = createAsyncThunk<
-  NewsType,
-  number,
-  {
-    dispatch: AppDispatch
-    state: AppState
-  }
-  >(
+export const loadCurrentNews = createAsyncThunk<NewsType, number, ThunkAPI>(
   'newsReducer/checkNewNews',
   async (id, thunkAPI) => {
     thunkAPI.dispatch(setLoading(true))
     const currentNews = await newsAPI.getNews(id)
+    if (currentNews.kids) {
+      const comments = await loadComments(currentNews.kids as Array<number>)
+      currentNews.kids = comments
+    }
     thunkAPI.dispatch(setLoading(false))
     return currentNews
   }
@@ -94,7 +82,7 @@ const newsReducer = createSlice({
     newLoadSuccess: (state, action) => {
       state.news.push(action.payload)
     },
-    setLoading: (state, action:PayloadAction<boolean>) => {
+    setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload
     },
     setIsNeedUpdate: (state, action) => {
@@ -122,3 +110,12 @@ const newsReducer = createSlice({
 export const {newLoadSuccess, setLoading, setIsNeedUpdate} = newsReducer.actions
 export default newsReducer.reducer
 
+export async function loadComments(commentsIds: Array<number>) {
+  let allCommentsPromise = []
+  for (let i = 0; i < commentsIds.length; i++) {
+    allCommentsPromise.push(newsAPI.getComment(+commentsIds[i]))
+  }
+  const comments = await Promise.all(allCommentsPromise)
+
+  return comments as Array<CommentType>
+}

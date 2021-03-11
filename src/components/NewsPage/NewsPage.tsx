@@ -1,17 +1,18 @@
 import React, {useEffect} from 'react';
-import { useParams } from 'react-router-dom';
-import { NewsType } from '../../types/types';
+import {useParams} from 'react-router-dom';
+import {CommentType, NewsType} from '../../types/types';
 import classes from './NewsPage.module.scss'
 import {useDispatch, useSelector} from "react-redux";
 import {getCurrentNews, getLoading} from '../../redux/news-selector';
 import {loadCurrentNews} from "../../redux/news-reducer";
 import Loader from "../Loader/Loader";
+import Comment from "./Comment/Comment";
 
 type RouterParams = {
   id: string
 }
 
-const NewsPage:React.FC = () => {
+const NewsPage: React.FC = () => {
   const dispatch = useDispatch()
   const {id} = useParams<RouterParams>()
   const news = useSelector(getCurrentNews)
@@ -22,8 +23,20 @@ const NewsPage:React.FC = () => {
   }, [dispatch, id])
 
   if (loading) {
-    return <Loader />
+    return <Loader/>
   }
+
+  let commentBlock:any
+  if (news.kids) {
+    commentBlock = news.kids.map((comment: CommentType | number) => {
+      if (typeof(comment) !== "number") {
+        return (
+          <Comment comment={comment} key={comment.id}/>
+        )
+      }
+    })
+  }
+  // console.log(news)
 
   return (
     <div className={classes.container}>
@@ -37,7 +50,9 @@ const NewsPage:React.FC = () => {
       <div>
         <h2 className="ui dividing header">Comments</h2>
         <div className={classes.commentsBlock}>
-          Comment
+          <div className="ui comments">
+            {commentBlock}
+          </div>
         </div>
       </div>
     </div>
