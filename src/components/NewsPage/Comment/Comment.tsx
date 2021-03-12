@@ -37,8 +37,8 @@ const Comment: React.FC<PropsType> = ({comment}) => {
         <div className="metadata">
           <span className="date">{new Date(comment.time * 1000).toString().slice(4, 21)}</span>
         </div>
-        <div className="text">
-          {comment.text}
+        <div className="text" dangerouslySetInnerHTML={{__html: comment.text}}>
+          {/*{comment.text}*/}
         </div>
         <div className="actions">
           <a className="reply">Reply</a>
