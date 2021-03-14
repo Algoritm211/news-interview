@@ -18,7 +18,7 @@ export const getPage = (state: AppState) => {
 }
 
 export const getLoading = (state: AppState) => {
-  return state.newsReducer.loading
+  return state.newsReducer.isLoading
 }
 
 

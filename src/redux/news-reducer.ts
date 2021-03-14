@@ -25,11 +25,14 @@ export const loadNewsList = createAsyncThunk(
   }
 )
 
-export const loadPageNews = createAsyncThunk<Array<NewsType>, number, ThunkAPI>(
+export const loadPageNews = createAsyncThunk<{
+  allData: Array<NewsType>,
+  loadingType: 'reload' | 'addNew',
+}, { page: number, loadingType: 'reload' | 'addNew' }, ThunkAPI>(
   'newsReducer/loadPageNews',
-  async (page, thunkAPI) => {
-    const newsArr = thunkAPI.getState().newsReducer.newsArray[page - 1]
-    // thunkAPI.dispatch(setLoading(true))
+  async (loadInfo, thunkAPI) => {
+    const newsArr = thunkAPI.getState().newsReducer.newsArray[loadInfo.page - 1]
+    thunkAPI.dispatch(setLoading(true))
     thunkAPI.dispatch(setIsNeedUpdate(false))
     let allData = [] as Array<NewsType>
     for (let i = 0; i < newsArr.length; i++) {
@@ -37,7 +40,7 @@ export const loadPageNews = createAsyncThunk<Array<NewsType>, number, ThunkAPI>(
       allData.push(news)
     }
     thunkAPI.dispatch(setLoading(false))
-    return allData
+    return {allData, loadingType: loadInfo.loadingType}
   }
 )
 
@@ -74,12 +77,12 @@ const newsReducer = createSlice({
     news: [] as Array<NewsType>,
     newsArray: [] as Array<Array<number>>,
     currentNews: {} as NewsType,
-    loading: true,
+    isLoading: true,
     page: 1,
     isNeedUpdate: false
   },
   reducers: {
-    setComments: (state, action:PayloadAction<{id: number, comments: Array<CommentType>}>) => {
+    setComments: (state, action: PayloadAction<{ id: number, comments: Array<CommentType> }>) => {
       state.news.map(news => {
         if (news.id === action.payload.id) {
           news.kids = action.payload.comments
@@ -87,12 +90,12 @@ const newsReducer = createSlice({
       })
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload
+      state.isLoading = action.payload
     },
     setIsNeedUpdate: (state, action) => {
       state.isNeedUpdate = action.payload
     },
-    setPage: (state, action:PayloadAction<{page: number}>) => {
+    setPage: (state, action: PayloadAction<{ page: number }>) => {
       state.page = action.payload.page
     }
   },
@@ -104,7 +107,11 @@ const newsReducer = createSlice({
 
     builder.addCase(loadPageNews.fulfilled, (state, action) => {
       console.log('All news loaded')
-      state.news.push(...action.payload)
+      if (action.payload.loadingType === 'reload') {
+        state.news = action.payload.allData
+      } else {
+        state.news.push(...action.payload.allData)
+      }
     })
 
     builder.addCase(loadCurrentNews.fulfilled, (state, action) => {
