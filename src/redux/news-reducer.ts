@@ -29,7 +29,7 @@ export const loadPageNews = createAsyncThunk<Array<NewsType>, number, ThunkAPI>(
   'newsReducer/loadPageNews',
   async (page, thunkAPI) => {
     const newsArr = thunkAPI.getState().newsReducer.newsArray[page - 1]
-    thunkAPI.dispatch(setLoading(true))
+    // thunkAPI.dispatch(setLoading(true))
     thunkAPI.dispatch(setIsNeedUpdate(false))
     let allData = [] as Array<NewsType>
     for (let i = 0; i < newsArr.length; i++) {
@@ -74,13 +74,17 @@ const newsReducer = createSlice({
     news: [] as Array<NewsType>,
     newsArray: [] as Array<Array<number>>,
     currentNews: {} as NewsType,
-    loading: false,
+    loading: true,
     page: 1,
     isNeedUpdate: false
   },
   reducers: {
-    newLoadSuccess: (state, action) => {
-      state.news.push(action.payload)
+    setComments: (state, action:PayloadAction<{id: number, comments: Array<CommentType>}>) => {
+      state.news.map(news => {
+        if (news.id === action.payload.id) {
+          news.kids = action.payload.comments
+        }
+      })
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload
@@ -88,16 +92,19 @@ const newsReducer = createSlice({
     setIsNeedUpdate: (state, action) => {
       state.isNeedUpdate = action.payload
     },
+    setPage: (state, action:PayloadAction<{page: number}>) => {
+      state.page = action.payload.page
+    }
   },
   extraReducers: builder => {
     builder.addCase(loadNewsList.fulfilled, (state, action) => {
-      const dividedForPagesArray = chunkArray(action.payload, 10)
+      const dividedForPagesArray = chunkArray(action.payload, 40)
       state.newsArray = dividedForPagesArray
     })
 
     builder.addCase(loadPageNews.fulfilled, (state, action) => {
       console.log('All news loaded')
-      state.news = action.payload
+      state.news.push(...action.payload)
     })
 
     builder.addCase(loadCurrentNews.fulfilled, (state, action) => {
@@ -107,7 +114,7 @@ const newsReducer = createSlice({
 })
 
 
-export const {newLoadSuccess, setLoading, setIsNeedUpdate} = newsReducer.actions
+export const {setComments, setLoading, setIsNeedUpdate, setPage} = newsReducer.actions
 export default newsReducer.reducer
 
 export async function loadComments(commentsIds: Array<number>) {

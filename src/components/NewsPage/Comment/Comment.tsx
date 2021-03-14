@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import UserAvatar from '../../../assets/user.png'
 import {CommentType} from "../../../types/types";
-import {Button} from "semantic-ui-react";
+import {Button, Loader} from "semantic-ui-react";
 import {useDispatch} from "react-redux";
 import {loadComments} from '../../../redux/news-reducer';
 
@@ -12,11 +12,14 @@ type PropsType = {
 const Comment: React.FC<PropsType> = ({comment}) => {
 
   const [replyComments, setReplyComments] = useState<Array<CommentType | number>>([])
+  const [loading, setLoading] = useState(false)
 
 
   const onLoadReplies = async () => {
     if (comment.kids) {
+      setLoading(true)
       const replies = await loadComments(comment.kids as Array<number>)
+      setLoading(false)
       setReplyComments(replies)
     }
   }
@@ -42,7 +45,7 @@ const Comment: React.FC<PropsType> = ({comment}) => {
         </div>
         <div className="actions">
           <a className="reply">Reply</a>
-          {comment.kids && <Button onClick={onLoadReplies}>Load Replies</Button>}
+          {comment.kids && <Button onClick={onLoadReplies} loading={loading}>Load Replies</Button>}
           <div className="ui comments">
             {repliesBlock}
           </div>

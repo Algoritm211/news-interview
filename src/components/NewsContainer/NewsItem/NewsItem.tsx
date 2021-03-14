@@ -24,9 +24,6 @@ const NewsItem: React.FC<PropsType> = ({news}) => {
         </div>
       </div>
       <div className="extra content">
-        <div>
-
-        </div>
         <i className="check icon"></i>
         Comments: {news.kids?.length || 0}
       </div>

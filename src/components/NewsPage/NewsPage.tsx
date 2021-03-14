@@ -1,13 +1,14 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom';
 import {CommentType, NewsType} from '../../types/types';
 import classes from './NewsPage.module.scss'
 import {useDispatch, useSelector} from "react-redux";
 import {getCurrentNews, getLoading} from '../../redux/news-selector';
-import {loadCurrentNews} from "../../redux/news-reducer";
+import {loadComments, loadCurrentNews, setComments} from "../../redux/news-reducer";
 import Loader from "../Loader/Loader";
 import Comment from "./Comment/Comment";
 import cn from 'classnames'
+import {Button} from "semantic-ui-react";
 
 type RouterParams = {
   id: string
@@ -18,17 +19,26 @@ const NewsPage: React.FC = () => {
   const {id} = useParams<RouterParams>()
   const news = useSelector(getCurrentNews)
   const loading = useSelector(getLoading)
+  const [commentLoading, setCommentLoading] = useState(false)
 
   useEffect(() => {
     dispatch(loadCurrentNews(+id))
   }, [dispatch, id])
 
-  if (loading) {
-    return <Loader/>
+  const loadNewsComments = async () => {
+    setCommentLoading(true)
+    //TODO solve bug with comments
+    const replies = await loadComments(news.kids as Array<number>)
+    dispatch(setComments({id: news.id, comments: replies}))
+    setCommentLoading(false)
   }
 
-  let commentBlock:any
-  if (news.kids) {
+  if (loading) {
+    return <Loader />
+  }
+
+  let commentBlock: any
+  if (news?.kids) {
     commentBlock = news.kids.map((comment: CommentType | number) => {
       if (typeof(comment) !== "number") {
         return (
@@ -37,7 +47,6 @@ const NewsPage: React.FC = () => {
       }
     })
   }
-  // console.log(news)
 
   return (
     <div className={classes.container}>
@@ -59,13 +68,16 @@ const NewsPage: React.FC = () => {
       <div>
         <h2 className="ui dividing header">
           Comments
-          <button className={cn('ui', 'secondary', 'button', classes.reloadBtn)}>
+          <Button
+            className={cn('ui', 'secondary', 'button', classes.reloadBtn)}
+            onClick={loadNewsComments}
+            loading={commentLoading}>
             Reload Comments
-          </button>
+          </Button>
         </h2>
         <div className={classes.commentsBlock}>
           <div className="ui comments">
-            {commentBlock}
+            {!commentLoading && commentBlock}
           </div>
         </div>
       </div>
