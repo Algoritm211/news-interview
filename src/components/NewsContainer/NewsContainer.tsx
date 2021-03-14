@@ -31,7 +31,7 @@ const NewsContainer: React.FC = () => {
 
   useEffect(() => {
     if (isScrollFetching) {
-      dispatch(loadPageNews({page: page +1, loadingType: "addNew"}))
+      dispatch(loadPageNews({page: page + 1, loadingType: "addNew"}))
       dispatch(setPage({page: page + 1}))
       setIsScrollFetching(false)
     }

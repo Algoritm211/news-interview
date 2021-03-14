@@ -45,7 +45,7 @@ const NewsPage: React.FC = () => {
     }
   }, [])
 
-  if (loading) {
+  if (loading || !news) {
     return <Loader />
   }
 

@@ -20,7 +20,7 @@ const JobsContainer: React.FC = () => {
         <div className="extra content">
           <div className={classes.buttons}>
             <Link to={'/news'}><div className="ui basic green button">News</div></Link>
-            <Link to={'/info'}><div className="ui basic blue button">Decline</div></Link>
+            <Link to={'/info'}><div className="ui basic blue button">Info</div></Link>
           </div>
         </div>
       </div>
