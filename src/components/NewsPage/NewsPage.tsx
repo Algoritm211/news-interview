@@ -4,11 +4,12 @@ import {CommentType, NewsType} from '../../types/types';
 import classes from './NewsPage.module.scss'
 import {useDispatch, useSelector} from "react-redux";
 import {getCurrentNews, getLoading} from '../../redux/news-selector';
-import {loadComments, loadCurrentNews, setComments} from "../../redux/news-reducer";
+import {checkNewNews, loadComments, loadCurrentNews, setComments} from "../../redux/news-reducer";
 import Loader from "../Loader/Loader";
 import Comment from "./Comment/Comment";
 import cn from 'classnames'
 import {Button} from "semantic-ui-react";
+import {newsAPI} from "../../api/news-api";
 
 type RouterParams = {
   id: string
@@ -27,11 +28,22 @@ const NewsPage: React.FC = () => {
 
   const loadNewsComments = async () => {
     setCommentLoading(true)
-    //TODO solve bug with comments
-    const replies = await loadComments(news.kids as Array<number>)
-    dispatch(setComments({id: news.id, comments: replies}))
+    if (news.kids) {
+      const newsItem = await newsAPI.getNews(news.id)
+      const replies = await loadComments(newsItem.kids as Array<number>)
+      dispatch(setComments({id: news.id, comments: replies}))
+    }
     setCommentLoading(false)
   }
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      loadNewsComments()
+    }, 60000)
+    return () => {
+      clearInterval(intervalId)
+    }
+  }, [])
 
   if (loading) {
     return <Loader />

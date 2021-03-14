@@ -7,6 +7,7 @@ import classes from './NewsContainer.module.scss'
 import cn from 'classnames'
 import {Popup} from 'semantic-ui-react';
 import Loader from "../Loader/Loader";
+import MiniLoader from "../MiniLoader/MiniLoader";
 
 
 const NewsContainer: React.FC = () => {
@@ -68,25 +69,21 @@ const NewsContainer: React.FC = () => {
   }
 
   const reloadButton = (
-    <button className={cn('ui', 'secondary', 'button', {'loading': isLoading}, classes.reloadBtn)}
+    <button className={cn('ui', 'secondary', 'button', classes.reloadBtn)}
             onClick={() => dispatch(loadNewsList())}>
-      Reload page
+      {isLoading ? 'Loading...' : 'Reload page'}
     </button>
   )
   return (
     <div className={classes.container} ref={containerRef}>
-      {!isLoading && !isScrollFetching
-        ? newsBlock
-        : <Loader/>
-      }
-      {!isLoading &&
+      {newsBlock}
+      {isLoading && < MiniLoader />}
+
       <Popup
         content='Check new content, refresh page)'
         open={isNeedUpdates}
         trigger={reloadButton}
       />
-      }
-      {isScrollFetching && <div>Loading...</div>}
     </div>
   );
 };

@@ -44,7 +44,7 @@ const Comment: React.FC<PropsType> = ({comment}) => {
           {/*{comment.text}*/}
         </div>
         <div className="actions">
-          <a className="reply">Reply</a>
+          <a className="reply" onClick={() => alert('function in development')}>Reply</a>
           {comment.kids && <Button onClick={onLoadReplies} loading={loading}>Load Replies</Button>}
           <div className="ui comments">
             {repliesBlock}

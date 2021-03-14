@@ -83,11 +83,7 @@ const newsReducer = createSlice({
   },
   reducers: {
     setComments: (state, action: PayloadAction<{ id: number, comments: Array<CommentType> }>) => {
-      state.news.map(news => {
-        if (news.id === action.payload.id) {
-          news.kids = action.payload.comments
-        }
-      })
+      state.currentNews.kids = action.payload.comments
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload

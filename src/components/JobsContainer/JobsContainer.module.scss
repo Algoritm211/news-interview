@@ -1,0 +1,30 @@
+
+
+@mixin container {
+  width: 60%;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 30px !important;
+  line-height: 40px;
+  .buttons {
+    display: flex;
+    justify-content: space-around;
+    a > div {
+      padding: 10px 70px !important;
+    }
+  }
+}
+
+@media (min-width: 850px) {
+  .container {
+    @include container
+  }
+}
+
+@media (min-width: 320px) and (max-width: 849px) {
+  .container {
+    @include container;
+    width: 96%;
+  }
+}
+
