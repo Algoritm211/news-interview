@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom';
-import {CommentType, NewsType} from '../../types/types';
+import {CommentType} from '../../types/types';
 import classes from './NewsPage.module.scss'
 import {useDispatch, useSelector} from "react-redux";
-import {getCurrentNews, getLoading} from '../../redux/news-selector';
-import {checkNewNews, loadComments, loadCurrentNews, setComments} from "../../redux/news-reducer";
+import {getCurrentNews, getLoading} from '../../redux/news-reducer/news-selector';
+import {loadComments, loadCurrentNews, setComments} from "../../redux/news-reducer/news-reducer";
 import Loader from "../Loader/Loader";
 import Comment from "./Comment/Comment";
 import cn from 'classnames'
@@ -70,7 +70,12 @@ const NewsPage: React.FC = () => {
           Reload &nbsp;<i className="undo alternate icon"/>
         </a>
       </div>
-      <h1 className="ui dividing header">{news.title}</h1>
+      <h1 className="ui header">{news.title}</h1>
+      <div className={classes.newsInfo}>
+        <div className="sub header">{new Date(news.time * 1000).toString().slice(4, 21)} | &nbsp;</div>
+        <div className="sub header">by {news.by} | </div>
+      </div>
+      <div className="ui divider" />
       <div className={classes.mainLink}>
         <h3 className="ui header">You can go to original news link: </h3>
         <a href={news?.url || '#'} target={'_blank'}>
@@ -79,7 +84,7 @@ const NewsPage: React.FC = () => {
       </div>
       <div>
         <h2 className="ui dividing header">
-          Comments
+          Comments ({news.kids?.length || 0})
           <Button
             className={cn('ui', 'secondary', 'button', classes.reloadBtn)}
             onClick={loadNewsComments}

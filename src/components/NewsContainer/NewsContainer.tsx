@@ -1,13 +1,13 @@
-import React, {LegacyRef, MutableRefObject, UIEventHandler, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import NewsItem from './NewsItem/NewsItem';
 import {useDispatch, useSelector} from "react-redux";
-import {checkNewNews, loadNewsList, loadPageNews, setLoading, setPage} from "../../redux/news-reducer";
-import {getListOfNews, getLoading, getNews, getPage, isNeedUpdate} from "../../redux/news-selector";
+import {checkNewNews, loadNewsList, loadPageNews, setPage} from "../../redux/news-reducer/news-reducer";
+import {getListOfNews, getLoading, getNews, getPage, isNeedUpdate} from "../../redux/news-reducer/news-selector";
 import classes from './NewsContainer.module.scss'
 import cn from 'classnames'
 import {Popup} from 'semantic-ui-react';
-import Loader from "../Loader/Loader";
 import MiniLoader from "../MiniLoader/MiniLoader";
+import {useHistory} from "react-router-dom";
 
 
 const NewsContainer: React.FC = () => {
@@ -22,11 +22,15 @@ const NewsContainer: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    dispatch(loadNewsList())
-  }, [])
+    if (listOfNews.length === 0) {
+      dispatch(loadNewsList())
+    }
+  }, [dispatch])
 
   useEffect(() => {
-    dispatch(loadPageNews({page, loadingType: "reload"}))
+    if (news.length === 0) {
+      dispatch(loadPageNews({page, loadingType: "reload"}))
+    }
   }, [listOfNews])
 
   useEffect(() => {
@@ -45,11 +49,11 @@ const NewsContainer: React.FC = () => {
     return () => {
       clearInterval(intervalId)
     }
-  }, [])
+  }, [dispatch])
 
-  const newsBlock = news.map((_news) => {
-    if (_news) {
-      return <NewsItem news={_news} key={_news.id}/>
+  const newsBlock = news.map((newsItem) => {
+    if (newsItem) {
+      return <NewsItem news={newsItem} key={newsItem.id}/>
     }
   })
 
@@ -77,7 +81,7 @@ const NewsContainer: React.FC = () => {
   return (
     <div className={classes.container} ref={containerRef}>
       {newsBlock}
-      {isLoading && < MiniLoader />}
+      {isLoading && < MiniLoader/>}
 
       <Popup
         content='Check new content, refresh page)'

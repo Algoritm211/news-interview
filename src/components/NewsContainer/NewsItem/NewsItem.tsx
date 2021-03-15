@@ -2,7 +2,8 @@ import React from 'react';
 import classes from "./NewsItem.module.scss";
 import cn from 'classnames'
 import {NewsType} from "../../../types/types";
-import {Link, useHistory} from "react-router-dom";
+import {Link} from "react-router-dom";
+import { getStringShorter } from '../../../assets/helperFunctions';
 
 type PropsType = {
   news: NewsType
@@ -15,8 +16,7 @@ const NewsItem: React.FC<PropsType> = ({news}) => {
         <div className="header"><Link to={`/news/${news.id}`}>{news.title}</Link></div>
         <div className={classes.metaContainer}>
           <div className="meta">{new Date(news.time * 1000).toString().slice(4, 21)} |</div>
-          <div className="meta">by {news.by} |</div>
-          <div className="meta">type: {news.type} |</div>
+          <div className="meta">by {getStringShorter(news.by, 7)} |</div>
           <div className="meta">Rating: {news.descendants}</div>
         </div>
 
@@ -30,5 +30,6 @@ const NewsItem: React.FC<PropsType> = ({news}) => {
     </div>
   );
 };
+
 
 export default NewsItem;

@@ -3,7 +3,7 @@ import UserAvatar from '../../../assets/user.png'
 import {CommentType} from "../../../types/types";
 import {Button, Loader} from "semantic-ui-react";
 import {useDispatch} from "react-redux";
-import {loadComments} from '../../../redux/news-reducer';
+import {loadComments} from '../../../redux/news-reducer/news-reducer';
 
 type PropsType = {
   comment: CommentType

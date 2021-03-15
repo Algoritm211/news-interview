@@ -1,9 +1,9 @@
-import {CommentType, NewsType} from "../types/types";
+import {CommentType, NewsType} from "../../types/types";
 import {AsyncThunk, createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 
-import {newsAPI} from "../api/news-api";
-import {chunkArray} from "../helperFuctions/helperFuncs";
-import {AppDispatch, AppState} from "../redux/store";
+import {newsAPI} from "../../api/news-api";
+import {chunkArray} from "../../helperFuctions/helperFuncs";
+import {AppDispatch, AppState} from "../../redux/store";
 
 
 type ThunkAPI = {
@@ -20,7 +20,6 @@ export const loadNewsList = createAsyncThunk(
   'newsReducer/loadNews',
   async (thunkAPI) => {
     const data = await newsAPI.getNewsList()
-
     return data
   }
 )
@@ -32,6 +31,9 @@ export const loadPageNews = createAsyncThunk<{
   'newsReducer/loadPageNews',
   async (loadInfo, thunkAPI) => {
     const newsArr = thunkAPI.getState().newsReducer.newsArray[loadInfo.page - 1]
+    if (loadInfo.loadingType === 'reload') {
+      thunkAPI.dispatch(deleteOldNews())
+    }
     thunkAPI.dispatch(setLoading(true))
     thunkAPI.dispatch(setIsNeedUpdate(false))
     let allData = [] as Array<NewsType>
@@ -93,11 +95,14 @@ const newsReducer = createSlice({
     },
     setPage: (state, action: PayloadAction<{ page: number }>) => {
       state.page = action.payload.page
+    },
+    deleteOldNews: (state) => {
+      state.news = []
     }
   },
   extraReducers: builder => {
     builder.addCase(loadNewsList.fulfilled, (state, action) => {
-      const dividedForPagesArray = chunkArray(action.payload, 40)
+      const dividedForPagesArray = chunkArray(action.payload, 20)
       state.newsArray = dividedForPagesArray
     })
 
@@ -117,7 +122,7 @@ const newsReducer = createSlice({
 })
 
 
-export const {setComments, setLoading, setIsNeedUpdate, setPage} = newsReducer.actions
+export const {setComments, setLoading, setIsNeedUpdate, setPage, deleteOldNews} = newsReducer.actions
 export default newsReducer.reducer
 
 export async function loadComments(commentsIds: Array<number>) {

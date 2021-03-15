@@ -1,5 +1,4 @@
 
-
 .container {
   padding: 15px 30px;
 
@@ -9,6 +8,7 @@
 
   .mainLink {
     margin-bottom: 40px;
+
     a {
       font-size: 2em !important;
     }
@@ -24,4 +24,9 @@
   margin: 0 auto;
   display: flex;
   justify-content: center;
+}
+
+
+.newsInfo {
+  display: flex;
 }
