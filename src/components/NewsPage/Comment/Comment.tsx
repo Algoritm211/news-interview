@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import UserAvatar from '../../../assets/user.png'
 import {CommentType} from "../../../types/types";
-import {Button, Loader} from "semantic-ui-react";
-import {useDispatch} from "react-redux";
+import {Button} from "semantic-ui-react";
 import {loadComments} from '../../../redux/news-reducer/news-reducer';
 
 type PropsType = {
@@ -27,7 +26,7 @@ const Comment: React.FC<PropsType> = ({comment}) => {
   const repliesBlock = replyComments.map((reply) => {
     if (typeof(reply) !== 'number') {
       return <Comment comment={reply} key={reply.id} />
-    }
+    } else {return  <div />}
   })
 
   return (
@@ -36,12 +35,11 @@ const Comment: React.FC<PropsType> = ({comment}) => {
         <img src={UserAvatar} width={45} height={45}/>
       </a>
       <div className="content">
-        <a className="author">{comment.by}</a>
+        <div className="author">{comment.by}</div>
         <div className="metadata">
           <span className="date">{new Date(comment.time * 1000).toString().slice(4, 21)}</span>
         </div>
         <div className="text" dangerouslySetInnerHTML={{__html: comment.text}}>
-          {/*{comment.text}*/}
         </div>
         <div className="actions">
           <a className="reply" onClick={() => alert('function in development')}>Reply</a>

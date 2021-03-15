@@ -4,12 +4,13 @@ import {CommentType} from '../../types/types';
 import classes from './NewsPage.module.scss'
 import {useDispatch, useSelector} from "react-redux";
 import {getCurrentNews, getLoading} from '../../redux/news-reducer/news-selector';
-import {loadComments, loadCurrentNews, setComments} from "../../redux/news-reducer/news-reducer";
+import {loadComments, loadCurrentNews} from "../../redux/news-reducer/news-reducer";
 import Loader from "../Loader/Loader";
 import Comment from "./Comment/Comment";
 import cn from 'classnames'
 import {Button} from "semantic-ui-react";
 import {newsAPI} from "../../api/news-api";
+import { setComments } from '../../redux/news-reducer/news-reducer';
 
 type RouterParams = {
   id: string
@@ -56,6 +57,8 @@ const NewsPage: React.FC = () => {
         return (
           <Comment comment={comment} key={comment.id}/>
         )
+      } else {
+        return <div/>
       }
     })
   }
@@ -78,7 +81,7 @@ const NewsPage: React.FC = () => {
       <div className="ui divider" />
       <div className={classes.mainLink}>
         <h3 className="ui header">You can go to original news link: </h3>
-        <a href={news?.url || '#'} target={'_blank'}>
+        <a href={news?.url || '#'} target={'_blank'} rel={'noreferrer'}>
           Click here
         </a>
       </div>
@@ -89,7 +92,7 @@ const NewsPage: React.FC = () => {
             className={cn('ui', 'secondary', 'button', classes.reloadBtn)}
             onClick={loadNewsComments}
             loading={commentLoading}>
-            Reload Comments
+            Reload
           </Button>
         </h2>
         <div className={classes.commentsBlock}>

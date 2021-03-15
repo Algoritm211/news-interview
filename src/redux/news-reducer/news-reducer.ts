@@ -1,19 +1,12 @@
 import {CommentType, NewsType} from "../../types/types";
-import {AsyncThunk, createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-
-import {newsAPI} from "../../api/news-api";
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {chunkArray} from "../../helperFuctions/helperFuncs";
-import {AppDispatch, AppState} from "../../redux/store";
-
+import {AppDispatch, AppState} from "../store";
+import {newsAPI} from "../../api/news-api";
 
 type ThunkAPI = {
   dispatch: AppDispatch
   state: AppState
-}
-
-export const initialState = {
-  news: [] as Array<NewsType>,
-  loading: false,
 }
 
 export const loadNewsList = createAsyncThunk(
@@ -72,7 +65,6 @@ export const loadCurrentNews = createAsyncThunk<NewsType, number, ThunkAPI>(
   }
 )
 
-
 const newsReducer = createSlice({
   name: 'newsReducer',
   initialState: {
@@ -124,6 +116,7 @@ const newsReducer = createSlice({
 
 export const {setComments, setLoading, setIsNeedUpdate, setPage, deleteOldNews} = newsReducer.actions
 export default newsReducer.reducer
+
 
 export async function loadComments(commentsIds: Array<number>) {
   let allCommentsPromise = []

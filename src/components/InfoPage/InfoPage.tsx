@@ -39,7 +39,7 @@ const InfoPage: React.FC = () => {
             <img src="https://avatars.githubusercontent.com/u/60394886?s=460&u=0351face4ac5348d3f5af6dee57c6822b5447380&v=4"/>
           </div>
           <div className="content">
-            <a className="header">Alexey Horbunov</a>
+            <div className="header">Alexey Horbunov</div>
             <div className="meta">
               <span>Frontend Developer</span>
             </div>
@@ -52,7 +52,7 @@ const InfoPage: React.FC = () => {
               <div className="ui red ribbon label" tabIndex={0}>
                 You can check my projects on GitHub:
               </div>
-              <a className="ui animated fade black button" href={'https://github.com/Algoritm211'} target={'_blank'}>
+              <a className="ui animated fade black button" href={'https://github.com/Algoritm211'} target={'_blank'} rel="noreferrer">
                 <div className="hidden content"><i className="github square icon normal"/></div>
                 <div className="visible content">
                   Go to My Git

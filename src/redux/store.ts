@@ -14,7 +14,7 @@ const store = configureStore({
 export type AppDispatch = typeof store.dispatch
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 
-type ActionFuncType<T> = T extends {[key: string]: infer U} ? U : never
+//type ActionFuncType<T> = T extends {[key: string]: infer U} ? U : never
 
 //Example
 // const actions = {
@@ -25,7 +25,7 @@ type ActionFuncType<T> = T extends {[key: string]: infer U} ? U : never
 //   }
 // }
 
-type InferActionTypes<T extends {[key: string]: (...args: any) => any}> = ReturnType<ActionFuncType<T>>
+//type InferActionTypes<T extends {[key: string]: (...args: any) => any}> = ReturnType<ActionFuncType<T>>
 
 // @ts-ignore
 window.__store__ = store

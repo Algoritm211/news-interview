@@ -1,13 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react';
 import NewsItem from './NewsItem/NewsItem';
 import {useDispatch, useSelector} from "react-redux";
-import {checkNewNews, loadNewsList, loadPageNews, setPage} from "../../redux/news-reducer/news-reducer";
+import {checkNewNews, loadNewsList, loadPageNews} from "../../redux/news-reducer/news-reducer";
 import {getListOfNews, getLoading, getNews, getPage, isNeedUpdate} from "../../redux/news-reducer/news-selector";
 import classes from './NewsContainer.module.scss'
 import cn from 'classnames'
 import {Popup} from 'semantic-ui-react';
 import MiniLoader from "../MiniLoader/MiniLoader";
-import {useHistory} from "react-router-dom";
+import { setPage } from '../../redux/news-reducer/news-reducer';
 
 
 const NewsContainer: React.FC = () => {
@@ -29,7 +29,7 @@ const NewsContainer: React.FC = () => {
 
   useEffect(() => {
     if (news.length === 0) {
-      dispatch(loadPageNews({page, loadingType: "reload"}))
+      dispatch(loadPageNews({page: 1, loadingType: "reload"}))
     }
   }, [listOfNews])
 
@@ -51,11 +51,6 @@ const NewsContainer: React.FC = () => {
     }
   }, [dispatch])
 
-  const newsBlock = news.map((newsItem) => {
-    if (newsItem) {
-      return <NewsItem news={newsItem} key={newsItem.id}/>
-    }
-  })
 
   useEffect(() => {
     document.addEventListener("scroll", handleScroll)
@@ -72,9 +67,20 @@ const NewsContainer: React.FC = () => {
     }
   }
 
+  const onReload = () => {
+    dispatch(loadNewsList())
+    dispatch(loadPageNews({page: 1, loadingType: "reload"}))
+  }
+
+  const newsBlock = news.map((newsItem) => {
+    if (newsItem) {
+      return <NewsItem news={newsItem} key={newsItem.id}/>
+    }
+  })
+
   const reloadButton = (
     <button className={cn('ui', 'secondary', 'button', classes.reloadBtn)}
-            onClick={() => dispatch(loadNewsList())}>
+            onClick={onReload}>
       {isLoading ? 'Loading...' : 'Reload page'}
     </button>
   )

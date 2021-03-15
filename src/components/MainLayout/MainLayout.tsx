@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import {Redirect, Route, Switch, useHistory, useParams} from 'react-router-dom';
-import {Input, Menu, MenuItemProps, Segment} from 'semantic-ui-react';
+import {Redirect, Route, Switch, useHistory} from 'react-router-dom';
+import {Menu, MenuItemProps, Segment} from 'semantic-ui-react';
 import NewsContainer from "../NewsContainer/NewsContainer";
 import NewsPage from "../NewsPage/NewsPage";
 import JobsContainer from "../JobsContainer/JobsContainer";
